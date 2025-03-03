@@ -9,8 +9,8 @@ function* fetchConfigSaga() {
     try {
         // In a real-world scenario you might fetch this from an endpoint.
         // Here we simply read the value from the environment.
-        const apiBaseUrl: string = import.meta.env.VITE_API_BASE_URL;
-        yield put(fetchConfigSuccess({ apiBaseUrl }));
+        const apiBaseUri: string = import.meta.env.VITE_API_BASE_URI;
+        yield put(fetchConfigSuccess({ apiBaseUri }));
     } catch (error: any) {
         yield put(fetchConfigFailure(error.message));
     }

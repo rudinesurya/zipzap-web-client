@@ -9,8 +9,8 @@ interface JobFormData {
     title: string;
     description: string;
     salary: string;
-    formattedAddress: string;
-    placeId: string;
+    formatted_address: string;
+    place_id: string;
     lat: string;
     lng: string;
 }
@@ -24,12 +24,12 @@ const CreateJob: React.FC = () => {
         title: '',
         description: '',
         salary: '',
-        formattedAddress: '',
-        placeId: '',
+        formatted_address: '',
+        place_id: '',
         lat: '',
         lng: '',
     });
-    
+
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
         { name, value }: { name: string; value: string; }
@@ -43,10 +43,10 @@ const CreateJob: React.FC = () => {
             title: job.title,
             description: job.description,
             salary: job.salary ? Number(job.salary) : undefined,
-            location: job.formattedAddress
+            location: job.formatted_address
                 ? {
-                    formattedAddress: job.formattedAddress,
-                    placeId: job.placeId,
+                    formattedAddress: job.formatted_address,
+                    placeId: job.place_id,
                     lat: Number(job.lat),
                     lng: Number(job.lng),
                 }
@@ -98,14 +98,14 @@ const CreateJob: React.FC = () => {
             />
             <Form.Input
                 label="Formatted Address"
-                name="formattedAddress"
-                value={job.formattedAddress}
+                name="formatted_address"
+                value={job.formatted_address}
                 onChange={handleChange}
             />
             <Form.Input
                 label="Place ID"
-                name="placeId"
-                value={job.placeId}
+                name="place_id"
+                value={job.place_id}
                 onChange={handleChange}
             />
             <Form.Group widths="equal">

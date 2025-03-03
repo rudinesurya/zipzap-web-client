@@ -17,57 +17,62 @@ import {
     updateJobRequest,
 } from '../slices/jobsSlice';
 import { RootState } from '../store';
+import { GetJobsResponseDto } from '../interfaces/job/get-jobs-response.dto';
+import { GetJobResponseDto } from '../interfaces/job/get-job-response.dto';
+import { CreateJobResponseDto } from '../interfaces/job/create-job-response.dto';
+import { UpdateJobResponseDto } from '../interfaces/job/update-job-response.dto';
+import { DeleteJobResponseDto } from '../interfaces/job/delete-job-response.dto';
 
 // Selector to get API base URL from config slice
-const selectApiBaseUrl = (state: RootState) => state.config.apiBaseUrl;
+const selectApiBaseUri = (state: RootState) => state.config.apiBaseUri;
 
 // Fetch all jobs API call
-const fetchJobsApi = async (apiBaseUrl: string) => {
-    const response = await fetch(`${apiBaseUrl}/api/jobs`);
+const fetchJobsApi = async (apiBaseUri: string) => {
+    const response = await fetch(`${apiBaseUri}/api/jobs`);
+    const responseData: GetJobsResponseDto = await response.json();
 
     if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Failed to fetch jobs');
+        throw new Error(responseData.system_message || 'Failed to fetch jobs');
     }
 
-    return response.json();
+    return responseData;
 };
 
 function* fetchJobsSaga() {
     try {
-        const apiBaseUrl: string = yield select(selectApiBaseUrl);
-        const jobs = yield call(fetchJobsApi, apiBaseUrl);
-        yield put(fetchJobsSuccess(jobs));
+        const apiBaseUri: string = yield select(selectApiBaseUri);
+        const response: GetJobsResponseDto = yield call(fetchJobsApi, apiBaseUri);
+        yield put(fetchJobsSuccess(response.data.jobs));
     } catch (error: any) {
         yield put(fetchJobsFailure(error.message));
     }
 }
 
 // Fetch single job API call
-const fetchJobApi = async (apiBaseUrl: string, jobId: string) => {
-    const response = await fetch(`${apiBaseUrl}/api/jobs/${jobId}`);
+const fetchJobApi = async (apiBaseUri: string, jobId: string) => {
+    const response = await fetch(`${apiBaseUri}/api/jobs/${jobId}`);
+    const responseData: GetJobResponseDto = await response.json();
 
     if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Failed to fetch job');
+        throw new Error(responseData.system_message || 'Failed to fetch job');
     }
 
-    return response.json();
+    return responseData;
 }
 
 function* fetchJobSaga(action: { payload: string; type: string }) {
     try {
-        const apiBaseUrl: string = yield select(selectApiBaseUrl);
-        const job = yield call(fetchJobApi, apiBaseUrl, action.payload);
-        yield put(fetchJobSuccess(job));
+        const apiBaseUri: string = yield select(selectApiBaseUri);
+        const response: GetJobResponseDto = yield call(fetchJobApi, apiBaseUri, action.payload);
+        yield put(fetchJobSuccess(response.data.job));
     } catch (error: any) {
         yield put(fetchJobFailure(error.message));
     }
 }
 
 // Create job API call
-const createJobApi = async (apiBaseUrl: string, payload: any, token: string) => {
-    const response = await fetch(`${apiBaseUrl}/api/jobs`, {
+const createJobApi = async (apiBaseUri: string, payload: any, token: string) => {
+    const response = await fetch(`${apiBaseUri}/api/jobs`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -75,28 +80,28 @@ const createJobApi = async (apiBaseUrl: string, payload: any, token: string) => 
         },
         body: JSON.stringify(payload),
     });
+    const responseData: CreateJobResponseDto = await response.json();
 
     if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Failed to create job');
+        throw new Error(responseData.system_message || 'Failed to create job');
     }
 
-    return response.json();
+    return responseData;
 }
 
 function* createJobSaga(action: { payload: { data: any; token: string }; type: string }) {
     try {
-        const apiBaseUrl: string = yield select(selectApiBaseUrl);
-        const job = yield call(createJobApi, apiBaseUrl, action.payload.data, action.payload.token);
-        yield put(createJobSuccess(job));
+        const apiBaseUri: string = yield select(selectApiBaseUri);
+        const response: CreateJobResponseDto = yield call(createJobApi, apiBaseUri, action.payload.data, action.payload.token);
+        yield put(createJobSuccess(response.data.job));
     } catch (error: any) {
         yield put(createJobFailure(error.message));
     }
 }
 
 // Update job API call
-const updateJobApi = async (apiBaseUrl: string, jobId: string, payload: any, token: string) => {
-    const response = await fetch(`${apiBaseUrl}/api/jobs/${jobId}`, {
+const updateJobApi = async (apiBaseUri: string, jobId: string, payload: any, token: string) => {
+    const response = await fetch(`${apiBaseUri}/api/jobs/${jobId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -104,46 +109,46 @@ const updateJobApi = async (apiBaseUrl: string, jobId: string, payload: any, tok
         },
         body: JSON.stringify(payload),
     });
+    const responseData: UpdateJobResponseDto = await response.json();
 
     if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Failed to update job');
+        throw new Error(responseData.system_message || 'Failed to update job');
     }
 
-    return response.json();
+    return responseData;
 }
 
 function* updateJobSaga(action: { payload: { jobId: string; data: any; token: string }; type: string }) {
     try {
-        const apiBaseUrl: string = yield select(selectApiBaseUrl);
-        const job = yield call(updateJobApi, apiBaseUrl, action.payload.jobId, action.payload.data, action.payload.token);
-        yield put(updateJobSuccess(job));
+        const apiBaseUri: string = yield select(selectApiBaseUri);
+        const response: UpdateJobResponseDto = yield call(updateJobApi, apiBaseUri, action.payload.jobId, action.payload.data, action.payload.token);
+        yield put(updateJobSuccess(response.data.job));
     } catch (error: any) {
         yield put(updateJobFailure(error.message));
     }
 }
 
 // Delete job API call
-const deleteJobApi = async (apiBaseUrl: string, jobId: string, token: string) => {
-    const response = await fetch(`${apiBaseUrl}/api/jobs/${jobId}`, {
+const deleteJobApi = async (apiBaseUri: string, jobId: string, token: string) => {
+    const response = await fetch(`${apiBaseUri}/api/jobs/${jobId}`, {
         method: 'DELETE',
         headers: {
             Authorization: `Bearer ${token}`,
         },
     });
+    const responseData: DeleteJobResponseDto = await response.json();
 
     if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Failed to delete job');
+        throw new Error(responseData.system_message || 'Failed to delete job');
     }
 
-    return response.json();
+    return responseData;
 }
 
 function* deleteJobSaga(action: { payload: { jobId: string; token: string }; type: string }) {
     try {
-        const apiBaseUrl: string = yield select(selectApiBaseUrl);
-        yield call(deleteJobApi, apiBaseUrl, action.payload.jobId, action.payload.token);
+        const apiBaseUri: string = yield select(selectApiBaseUri);
+        yield call(deleteJobApi, apiBaseUri, action.payload.jobId, action.payload.token);
         yield put(deleteJobSuccess(action.payload.jobId));
     } catch (error: any) {
         yield put(deleteJobFailure(error.message));

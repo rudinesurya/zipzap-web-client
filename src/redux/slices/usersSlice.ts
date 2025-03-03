@@ -1,22 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { logout } from './authSlice'; // Import the logout action from your auth slice
-
-export interface UserProfile {
-    _id: string;
-    name: string;
-    email: string;
-    handle?: string;
-    // Add any other fields you expect from the profile
-}
+import { IUser } from '../interfaces/user/user.interface';
 
 interface UserState {
-    userProfile: UserProfile | null;
+    user: IUser | null;
     loading: boolean;
     error?: string;
 }
 
 const initialState: UserState = {
-    userProfile: null,
+    user: null,
     loading: false,
     error: undefined,
 };
@@ -29,8 +22,8 @@ const usersSlice = createSlice({
             state.loading = true;
             state.error = undefined;
         },
-        fetchUserProfileSuccess(state, action: PayloadAction<UserProfile>) {
-            state.userProfile = action.payload;
+        fetchUserProfileSuccess(state, action: PayloadAction<IUser>) {
+            state.user = action.payload;
             state.loading = false;
         },
         fetchUserProfileFailure(state, action: PayloadAction<string>) {
@@ -39,9 +32,9 @@ const usersSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        // When the auth logout action is dispatched, also clear the user userProfile
+        // When the auth logout action is dispatched, also clear the user user
         builder.addCase(logout, (state) => {
-            state.userProfile = null;
+            state.user = null;
         });
     },
 });

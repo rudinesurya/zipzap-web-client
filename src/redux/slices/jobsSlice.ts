@@ -1,24 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-export interface LocationData {
-    formattedAddress: string;
-    placeId: string;
-    lat: number;
-    lng: number;
-}
-
-export interface Job {
-    _id: string;
-    title: string;
-    description: string;
-    salary?: number;
-    location?: LocationData;
-    postedBy: string;
-}
+import { IJob } from '../interfaces/job/job.interface';
 
 interface JobsState {
-    jobs: Job[];
-    selectedJob: Job | null;
+    jobs: IJob[];
+    selectedJob: IJob | null;
     loading: boolean;
     error?: string;
 }
@@ -39,7 +24,7 @@ const jobsSlice = createSlice({
             state.loading = true;
             state.error = undefined;
         },
-        fetchJobsSuccess(state, action: PayloadAction<Job[]>) {
+        fetchJobsSuccess(state, action: PayloadAction<IJob[]>) {
             state.jobs = action.payload;
             state.loading = false;
         },
@@ -53,7 +38,7 @@ const jobsSlice = createSlice({
             state.loading = true;
             state.error = undefined;
         },
-        fetchJobSuccess(state, action: PayloadAction<Job>) {
+        fetchJobSuccess(state, action: PayloadAction<IJob>) {
             state.selectedJob = action.payload;
             state.loading = false;
         },
@@ -67,7 +52,7 @@ const jobsSlice = createSlice({
             state.loading = true;
             state.error = undefined;
         },
-        createJobSuccess(state, action: PayloadAction<Job>) {
+        createJobSuccess(state, action: PayloadAction<IJob>) {
             state.jobs.push(action.payload);
             state.loading = false;
         },
@@ -81,7 +66,7 @@ const jobsSlice = createSlice({
             state.loading = true;
             state.error = undefined;
         },
-        updateJobSuccess(state, action: PayloadAction<Job>) {
+        updateJobSuccess(state, action: PayloadAction<IJob>) {
             const index = state.jobs.findIndex((job) => job._id === action.payload._id);
             if (index !== -1) {
                 state.jobs[index] = action.payload;

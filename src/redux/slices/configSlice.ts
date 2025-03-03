@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface ConfigState {
-    apiBaseUrl: string;
+    apiBaseUri: string;
     error?: string;
 }
 
 const initialState: ConfigState = {
-    apiBaseUrl: '', // initially empty
+    apiBaseUri: '', // initially empty
 };
 
 const configSlice = createSlice({
@@ -16,8 +16,8 @@ const configSlice = createSlice({
         fetchConfigRequest(state) {
             state.error = undefined;
         },
-        fetchConfigSuccess(state, action: PayloadAction<{ apiBaseUrl: string }>) {
-            state.apiBaseUrl = action.payload.apiBaseUrl;
+        fetchConfigSuccess(state, action: PayloadAction<{ apiBaseUri: string }>) {
+            state.apiBaseUri = action.payload.apiBaseUri;
             state.error = undefined;
         },
         fetchConfigFailure(state, action: PayloadAction<string>) {

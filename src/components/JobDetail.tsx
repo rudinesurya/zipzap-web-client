@@ -37,11 +37,11 @@ const JobDetail: React.FC = () => {
                 <>
                     <Divider />
                     <Header as="h4">Location</Header>
-                    <p>{job.location.formattedAddress}</p>
+                    <p>{job.location.formatted_address}</p>
                     <p>
                         Coordinates: {job.location.lat}, {job.location.lng}
                     </p>
-                    <p><strong>Place ID:</strong> {job.location.placeId}</p>
+                    <p><strong>Place ID:</strong> {job.location.place_id}</p>
                 </>
             )}
         </Segment>

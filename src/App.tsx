@@ -13,7 +13,7 @@ import { RootState } from "./redux/store";
 
 const App: React.FC = () => {
     const dispatch = useDispatch();
-    const apiBaseUrl = useSelector((state: RootState) => state.config.apiBaseUrl);
+    const apiBaseUri = useSelector((state: RootState) => state.config.apiBaseUri);
     const token = useSelector((state: RootState) => state.auth.token);
 
     useEffect(() => {
@@ -22,10 +22,10 @@ const App: React.FC = () => {
     }, [dispatch]);
 
     useEffect(() => {
-        if (apiBaseUrl && token) {
+        if (apiBaseUri && token) {
             dispatch(fetchUserProfileRequest());
         }
-    }, [apiBaseUrl, token, dispatch]);
+    }, [apiBaseUri, token, dispatch]);
 
     return (
         <Router>

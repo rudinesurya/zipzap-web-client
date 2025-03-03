@@ -5,14 +5,13 @@ import {
     fetchUserProfileFailure,
 } from '../slices/usersSlice';
 import { RootState } from '../store';
+import { GetUserResponseDto } from '../interfaces/user/get-user-response.dto';
 
-// Selector to get the API base URL from the config slice.
-const selectApiBaseUrl = (state: RootState) => state.config.apiBaseUrl;
-// Selector to get the auth token from the auth slice.
+const selectApiBaseUri = (state: RootState) => state.config.apiBaseUri;
 const selectAuthToken = (state: RootState) => state.auth.token;
 
-const fetchUserProfileApi = async (apiBaseUrl: string, token: string) => {
-    const response = await fetch(`${apiBaseUrl}/api/users/profile`, {
+const fetchUserProfileApi = async (apiBaseUri: string, token: string) => {
+    const response = await fetch(`${apiBaseUri}/api/users`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -20,12 +19,13 @@ const fetchUserProfileApi = async (apiBaseUrl: string, token: string) => {
         },
     });
 
+    const responseData: GetUserResponseDto = await response.json();
+
     if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Failed to fetch user profile');
+        throw new Error(responseData.system_message || 'Failed to fetch user profile');
     }
 
-    return response.json();
+    return responseData;
 }
 
 function* fetchUserProfileSaga() {
@@ -34,9 +34,9 @@ function* fetchUserProfileSaga() {
         if (!token) {
             throw new Error('No auth token found');
         }
-        const apiBaseUrl: string = yield select(selectApiBaseUrl);
-        const profile = yield call(fetchUserProfileApi, apiBaseUrl, token);
-        yield put(fetchUserProfileSuccess(profile));
+        const apiBaseUri: string = yield select(selectApiBaseUri);
+        const response: GetUserResponseDto = yield call(fetchUserProfileApi, apiBaseUri, token);
+        yield put(fetchUserProfileSuccess(response.data.user));
     } catch (error: any) {
         yield put(fetchUserProfileFailure(error.message));
     }
