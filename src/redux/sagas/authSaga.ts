@@ -2,9 +2,7 @@ import { call, put, select, takeLatest } from 'redux-saga/effects';
 import { loginSuccess, loginFailure, logoutRequest, registerFailure, registerSuccess, loginRequest, registerRequest, logout } from '../slices/authSlice';
 import { RootState } from '../store';
 import Cookies from 'js-cookie';
-import { CreateUserResponseDto } from '../interfaces/user/create-user-response.dto';
-import { LoginUserResponseDto } from '../interfaces/user/login-user-response.dto';
-import { LogoutUserResponseDto } from '../interfaces/user/logout-user-response.dto';
+import { LoginUserResponseDto, CreateUserResponseDto, LogoutUserResponseDto } from '@rudinesurya/api-gateway-interfaces';
 
 interface LoginPayload {
     email: string;

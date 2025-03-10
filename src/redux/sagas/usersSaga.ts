@@ -5,7 +5,7 @@ import {
     fetchUserProfileFailure,
 } from '../slices/usersSlice';
 import { RootState } from '../store';
-import { GetUserResponseDto } from '../interfaces/user/get-user-response.dto';
+import { GetUserResponseDto } from '@rudinesurya/api-gateway-interfaces';
 
 const selectApiBaseUri = (state: RootState) => state.config.apiBaseUri;
 const selectAuthToken = (state: RootState) => state.auth.token;

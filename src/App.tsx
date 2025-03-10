@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchConfigRequest } from "./redux/slices/configSlice";
 import { fetchUserProfileRequest } from "./redux/slices/usersSlice";
 import { RootState } from "./redux/store";
+import ApplyJob from "./components/ApplyJob";
 
 const App: React.FC = () => {
     const dispatch = useDispatch();
@@ -37,6 +38,8 @@ const App: React.FC = () => {
                     <Route path="/create-job" element={<CreateJob />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
+
+                    <Route path="/apply-job/:jobId" element={<ApplyJob />} />
                 </Routes>
             </div>
         </Router>

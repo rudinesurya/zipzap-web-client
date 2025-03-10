@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { logout } from './authSlice'; // Import the logout action from your auth slice
-import { IUser } from '../interfaces/user/user.interface';
+import { IUser } from '@rudinesurya/api-gateway-interfaces';
 
 interface UserState {
     user: IUser | null;

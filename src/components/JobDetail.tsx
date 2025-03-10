@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { Segment, Header, Divider, Loader, Message } from 'semantic-ui-react';
+import { Link, useParams } from 'react-router-dom';
+import { Segment, Header, Divider, Loader, Message, Button } from 'semantic-ui-react';
 import { RootState } from '../redux/store';
 import { fetchJobRequest } from '../redux/slices/jobsSlice';
 
@@ -13,6 +13,9 @@ const JobDetail: React.FC = () => {
     const { jobId } = useParams<RouteParams>();
     const dispatch = useDispatch();
     const { selectedJob: job, loading, error } = useSelector((state: RootState) => state.jobs);
+    const { user } = useSelector((state: RootState) => state.users);
+
+    // todo: check if you already have applied for this job
 
     useEffect(() => {
         if (jobId) {
@@ -20,7 +23,7 @@ const JobDetail: React.FC = () => {
         }
     }, [dispatch, jobId]);
 
-    if (loading || !job) {
+    if (loading || !job || !user) {
         return <Loader active inline="centered" />;
     }
 
@@ -42,6 +45,12 @@ const JobDetail: React.FC = () => {
                         Coordinates: {job.location.lat}, {job.location.lng}
                     </p>
                     <p><strong>Place ID:</strong> {job.location.place_id}</p>
+
+                    {job.posted_by !== user._id && (
+                        <Button as={Link} to={`/apply-job/${job._id}`} primary>
+                            Send Application
+                        </Button>
+                    )}
                 </>
             )}
         </Segment>

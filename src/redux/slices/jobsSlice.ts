@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IJob } from '../interfaces/job/job.interface';
+import { IJob } from '@rudinesurya/api-gateway-interfaces';
 
 interface JobsState {
     jobs: IJob[];

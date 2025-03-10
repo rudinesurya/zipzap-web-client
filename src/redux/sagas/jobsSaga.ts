@@ -17,11 +17,7 @@ import {
     updateJobRequest,
 } from '../slices/jobsSlice';
 import { RootState } from '../store';
-import { GetJobsResponseDto } from '../interfaces/job/get-jobs-response.dto';
-import { GetJobResponseDto } from '../interfaces/job/get-job-response.dto';
-import { CreateJobResponseDto } from '../interfaces/job/create-job-response.dto';
-import { UpdateJobResponseDto } from '../interfaces/job/update-job-response.dto';
-import { DeleteJobResponseDto } from '../interfaces/job/delete-job-response.dto';
+import { GetJobsResponseDto, GetJobResponseDto, CreateJobResponseDto, UpdateJobResponseDto, DeleteJobResponseDto } from '@rudinesurya/api-gateway-interfaces';
 
 // Selector to get API base URL from config slice
 const selectApiBaseUri = (state: RootState) => state.config.apiBaseUri;
