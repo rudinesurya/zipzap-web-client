@@ -2,12 +2,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IApplication } from '@rudinesurya/api-gateway-interfaces';
 
 interface ApplicationsState {
+    applications: IApplication[];
     application: IApplication | null;
     loading: boolean;
     error?: string;
 }
 
 const initialState: ApplicationsState = {
+    applications: [],
     application: null,
     loading: false,
     error: undefined,
@@ -30,7 +32,19 @@ const applicationsSlice = createSlice({
             state.error = action.payload;
         },
 
-        // Create a job
+        fetchApplicationsRequest(state, action: PayloadAction<string>) {
+            state.loading = true;
+            state.error = undefined;
+        },
+        fetchApplicationsSuccess(state, action: PayloadAction<IApplication[]>) {
+            state.applications = action.payload;
+            state.loading = false;
+        },
+        fetchApplicationsFailure(state, action: PayloadAction<string>) {
+            state.loading = false;
+            state.error = action.payload;
+        },
+
         createApplicationRequest(state, action: PayloadAction<{ data: any; token: string }>) {
             state.loading = true;
             state.error = undefined;
@@ -50,6 +64,9 @@ export const {
     fetchApplicationRequest,
     fetchApplicationSuccess,
     fetchApplicationFailure,
+    fetchApplicationsRequest,
+    fetchApplicationsSuccess,
+    fetchApplicationsFailure,
     createApplicationRequest,
     createApplicationSuccess,
     createApplicationFailure
