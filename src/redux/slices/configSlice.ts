@@ -20,8 +20,8 @@ const configSlice = createSlice({
             state.apiBaseUri = action.payload.apiBaseUri;
             state.error = undefined;
         },
-        fetchConfigFailure(state, action: PayloadAction<string>) {
-            state.error = action.payload;
+        fetchConfigFailure(state, action: PayloadAction<{ error: string }>) {
+            state.error = action.payload.error;
         },
     },
 });

@@ -12,7 +12,7 @@ function* fetchConfigSaga() {
         const apiBaseUri: string = import.meta.env.VITE_API_BASE_URI;
         yield put(fetchConfigSuccess({ apiBaseUri }));
     } catch (error: any) {
-        yield put(fetchConfigFailure(error.message));
+        yield put(fetchConfigFailure({ error: error.message }));
     }
 }
 

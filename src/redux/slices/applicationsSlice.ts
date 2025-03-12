@@ -19,43 +19,43 @@ const applicationsSlice = createSlice({
     name: 'applications',
     initialState,
     reducers: {
-        fetchApplicationRequest(state, action: PayloadAction<string>) {
+        fetchApplicationRequest(state, action: PayloadAction<{ id: string }>) {
             state.loading = true;
             state.error = undefined;
         },
-        fetchApplicationSuccess(state, action: PayloadAction<IApplication>) {
-            state.application = action.payload;
+        fetchApplicationSuccess(state, action: PayloadAction<{ application: IApplication }>) {
+            state.application = action.payload.application;
             state.loading = false;
         },
-        fetchApplicationFailure(state, action: PayloadAction<string>) {
+        fetchApplicationFailure(state, action: PayloadAction<{ error: string }>) {
             state.loading = false;
-            state.error = action.payload;
+            state.error = action.payload.error;
         },
 
-        fetchApplicationsRequest(state, action: PayloadAction<string>) {
+        fetchApplicationsByJobIdRequest(state, action: PayloadAction<{ id: string }>) {
             state.loading = true;
             state.error = undefined;
         },
-        fetchApplicationsSuccess(state, action: PayloadAction<IApplication[]>) {
-            state.applications = action.payload;
+        fetchApplicationsByJobIdSuccess(state, action: PayloadAction<{ applications: IApplication[] }>) {
+            state.applications = action.payload.applications;
             state.loading = false;
         },
-        fetchApplicationsFailure(state, action: PayloadAction<string>) {
+        fetchApplicationsByJobIdFailure(state, action: PayloadAction<{ error: string }>) {
             state.loading = false;
-            state.error = action.payload;
+            state.error = action.payload.error;
         },
 
-        createApplicationRequest(state, action: PayloadAction<{ data: any; token: string }>) {
+        createApplicationRequest(state, action: PayloadAction<{ data: any; }>) {
             state.loading = true;
             state.error = undefined;
         },
-        createApplicationSuccess(state, action: PayloadAction<IApplication>) {
-            state.application = action.payload;
+        createApplicationSuccess(state, action: PayloadAction<{ application: IApplication }>) {
+            state.application = action.payload.application;
             state.loading = false;
         },
-        createApplicationFailure(state, action: PayloadAction<string>) {
+        createApplicationFailure(state, action: PayloadAction<{ error: string }>) {
             state.loading = false;
-            state.error = action.payload;
+            state.error = action.payload.error;
         },
     },
 });
@@ -64,9 +64,9 @@ export const {
     fetchApplicationRequest,
     fetchApplicationSuccess,
     fetchApplicationFailure,
-    fetchApplicationsRequest,
-    fetchApplicationsSuccess,
-    fetchApplicationsFailure,
+    fetchApplicationsByJobIdRequest,
+    fetchApplicationsByJobIdSuccess,
+    fetchApplicationsByJobIdFailure,
     createApplicationRequest,
     createApplicationSuccess,
     createApplicationFailure

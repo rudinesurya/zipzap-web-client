@@ -59,8 +59,7 @@ const CreateJob: React.FC = () => {
             return;
         }
 
-        // Dispatch the createJobRequest with the payload and token.
-        dispatch(createJobRequest({ data: payload, token: auth.token }));
+        dispatch(createJobRequest({ data: payload }));
     };
 
     // Redirect to job detail page when a job is successfully created.

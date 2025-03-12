@@ -41,7 +41,7 @@ function* loginSaga(action: { payload: LoginPayload; type: string }) {
         Cookies.set('token', response.data.token, { expires: 7 });
         yield put(loginSuccess({ token: response.data.token }));
     } catch (error: any) {
-        yield put(loginFailure(error.message));
+        yield put(loginFailure({ error: error.message }));
     }
 }
 
@@ -68,7 +68,7 @@ function* registerSaga(action: { payload: RegisterPayload; type: string }) {
         Cookies.set('token', response.data.token, { expires: 7 });
         yield put(registerSuccess({ token: response.data.token }));
     } catch (error: any) {
-        yield put(registerFailure(error.message));
+        yield put(registerFailure({ error: error.message }));
     }
 }
 

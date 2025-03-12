@@ -24,8 +24,8 @@ const authSlice = createSlice({
             state.error = undefined;
         },
         // Action dispatched when login fails
-        loginFailure(state, action: PayloadAction<string>) {
-            state.error = action.payload;
+        loginFailure(state, action: PayloadAction<{ error: string }>) {
+            state.error = action.payload.error;
         },
         registerRequest(state, action: PayloadAction<{ name: string; email: string; password: string }>) {
             state.error = undefined;
@@ -34,8 +34,8 @@ const authSlice = createSlice({
             state.token = action.payload.token;
             state.error = undefined;
         },
-        registerFailure(state, action: PayloadAction<string>) {
-            state.error = action.payload;
+        registerFailure(state, action: PayloadAction<{ error: string }>) {
+            state.error = action.payload.error;
         },
         // Action to log out
         logoutRequest(state) {
@@ -52,5 +52,15 @@ const authSlice = createSlice({
     },
 });
 
-export const { loginRequest, loginSuccess, loginFailure, registerRequest, registerSuccess, registerFailure, logoutRequest, logout, clearError } = authSlice.actions;
+export const {
+    loginRequest,
+    loginSuccess,
+    loginFailure,
+    registerRequest,
+    registerSuccess,
+    registerFailure,
+    logoutRequest,
+    logout,
+    clearError
+} = authSlice.actions;
 export default authSlice.reducer;

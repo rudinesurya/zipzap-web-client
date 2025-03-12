@@ -22,13 +22,13 @@ const usersSlice = createSlice({
             state.loading = true;
             state.error = undefined;
         },
-        fetchUserProfileSuccess(state, action: PayloadAction<IUser>) {
-            state.user = action.payload;
+        fetchUserProfileSuccess(state, action: PayloadAction<{ user: IUser }>) {
+            state.user = action.payload.user;
             state.loading = false;
         },
-        fetchUserProfileFailure(state, action: PayloadAction<string>) {
+        fetchUserProfileFailure(state, action: PayloadAction<{ error: string }>) {
             state.loading = false;
-            state.error = action.payload;
+            state.error = action.payload.error;
         },
     },
     extraReducers: (builder) => {
@@ -39,6 +39,9 @@ const usersSlice = createSlice({
     },
 });
 
-export const { fetchUserProfileRequest, fetchUserProfileSuccess, fetchUserProfileFailure } =
-    usersSlice.actions;
+export const {
+    fetchUserProfileRequest,
+    fetchUserProfileSuccess,
+    fetchUserProfileFailure
+} = usersSlice.actions;
 export default usersSlice.reducer;

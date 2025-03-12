@@ -21,6 +21,7 @@ import { GetJobsResponseDto, GetJobResponseDto, CreateJobResponseDto, UpdateJobR
 
 // Selector to get API base URL from config slice
 const selectApiBaseUri = (state: RootState) => state.config.apiBaseUri;
+const selectAuthToken = (state: RootState) => state.auth.token;
 
 // Fetch all jobs API call
 const fetchJobsApi = async (apiBaseUri: string) => {
@@ -38,15 +39,15 @@ function* fetchJobsSaga() {
     try {
         const apiBaseUri: string = yield select(selectApiBaseUri);
         const response: GetJobsResponseDto = yield call(fetchJobsApi, apiBaseUri);
-        yield put(fetchJobsSuccess(response.data.jobs));
+        yield put(fetchJobsSuccess({ jobs: response.data.jobs }));
     } catch (error: any) {
-        yield put(fetchJobsFailure(error.message));
+        yield put(fetchJobsFailure({ error: error.message }));
     }
 }
 
 // Fetch single job API call
-const fetchJobApi = async (apiBaseUri: string, jobId: string) => {
-    const response = await fetch(`${apiBaseUri}/api/jobs/${jobId}`);
+const fetchJobApi = async (apiBaseUri: string, id: string) => {
+    const response = await fetch(`${apiBaseUri}/api/jobs/${id}`);
     const responseData: GetJobResponseDto = await response.json();
 
     if (!response.ok) {
@@ -56,13 +57,13 @@ const fetchJobApi = async (apiBaseUri: string, jobId: string) => {
     return responseData;
 }
 
-function* fetchJobSaga(action: { payload: string; type: string }) {
+function* fetchJobSaga(action: { payload: { id: string }; type: string }) {
     try {
         const apiBaseUri: string = yield select(selectApiBaseUri);
-        const response: GetJobResponseDto = yield call(fetchJobApi, apiBaseUri, action.payload);
-        yield put(fetchJobSuccess(response.data.job));
+        const response: GetJobResponseDto = yield call(fetchJobApi, apiBaseUri, action.payload.id);
+        yield put(fetchJobSuccess({ job: response.data.job }));
     } catch (error: any) {
-        yield put(fetchJobFailure(error.message));
+        yield put(fetchJobFailure({ error: error.message }));
     }
 }
 
@@ -85,19 +86,20 @@ const createJobApi = async (apiBaseUri: string, payload: any, token: string) => 
     return responseData;
 }
 
-function* createJobSaga(action: { payload: { data: any; token: string }; type: string }) {
+function* createJobSaga(action: { payload: { data: any; }; type: string }) {
     try {
         const apiBaseUri: string = yield select(selectApiBaseUri);
-        const response: CreateJobResponseDto = yield call(createJobApi, apiBaseUri, action.payload.data, action.payload.token);
-        yield put(createJobSuccess(response.data.job));
+        const token: string = yield select(selectAuthToken);
+        const response: CreateJobResponseDto = yield call(createJobApi, apiBaseUri, action.payload.data, token);
+        yield put(createJobSuccess({ job: response.data.job }));
     } catch (error: any) {
-        yield put(createJobFailure(error.message));
+        yield put(createJobFailure({ error: error.message }));
     }
 }
 
 // Update job API call
-const updateJobApi = async (apiBaseUri: string, jobId: string, payload: any, token: string) => {
-    const response = await fetch(`${apiBaseUri}/api/jobs/${jobId}`, {
+const updateJobApi = async (apiBaseUri: string, id: string, payload: any, token: string) => {
+    const response = await fetch(`${apiBaseUri}/api/jobs/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -114,19 +116,20 @@ const updateJobApi = async (apiBaseUri: string, jobId: string, payload: any, tok
     return responseData;
 }
 
-function* updateJobSaga(action: { payload: { jobId: string; data: any; token: string }; type: string }) {
+function* updateJobSaga(action: { payload: { id: string; data: any; }; type: string }) {
     try {
         const apiBaseUri: string = yield select(selectApiBaseUri);
-        const response: UpdateJobResponseDto = yield call(updateJobApi, apiBaseUri, action.payload.jobId, action.payload.data, action.payload.token);
-        yield put(updateJobSuccess(response.data.job));
+        const token: string = yield select(selectAuthToken);
+        const response: UpdateJobResponseDto = yield call(updateJobApi, apiBaseUri, action.payload.id, action.payload.data, token);
+        yield put(updateJobSuccess({ job: response.data.job }));
     } catch (error: any) {
-        yield put(updateJobFailure(error.message));
+        yield put(updateJobFailure({ error: error.message }));
     }
 }
 
 // Delete job API call
-const deleteJobApi = async (apiBaseUri: string, jobId: string, token: string) => {
-    const response = await fetch(`${apiBaseUri}/api/jobs/${jobId}`, {
+const deleteJobApi = async (apiBaseUri: string, id: string, token: string) => {
+    const response = await fetch(`${apiBaseUri}/api/jobs/${id}`, {
         method: 'DELETE',
         headers: {
             Authorization: `Bearer ${token}`,
@@ -141,13 +144,14 @@ const deleteJobApi = async (apiBaseUri: string, jobId: string, token: string) =>
     return responseData;
 }
 
-function* deleteJobSaga(action: { payload: { jobId: string; token: string }; type: string }) {
+function* deleteJobSaga(action: { payload: { id: string; }; type: string }) {
     try {
         const apiBaseUri: string = yield select(selectApiBaseUri);
-        yield call(deleteJobApi, apiBaseUri, action.payload.jobId, action.payload.token);
-        yield put(deleteJobSuccess(action.payload.jobId));
+        const token: string = yield select(selectAuthToken);
+        yield call(deleteJobApi, apiBaseUri, action.payload.id, token);
+        yield put(deleteJobSuccess({ id: action.payload.id }));
     } catch (error: any) {
-        yield put(deleteJobFailure(error.message));
+        yield put(deleteJobFailure({ error: error.message }));
     }
 }
 

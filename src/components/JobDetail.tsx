@@ -19,7 +19,7 @@ const JobDetail: React.FC = () => {
 
     useEffect(() => {
         if (jobId) {
-            dispatch(fetchJobRequest(jobId));
+            dispatch(fetchJobRequest({ id: jobId }));
         }
     }, [dispatch, jobId]);
 

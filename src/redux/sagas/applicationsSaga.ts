@@ -3,9 +3,9 @@ import {
     fetchApplicationRequest,
     fetchApplicationSuccess,
     fetchApplicationFailure,
-    fetchApplicationsRequest,
-    fetchApplicationsSuccess,
-    fetchApplicationsFailure,
+    fetchApplicationsByJobIdRequest,
+    fetchApplicationsByJobIdSuccess,
+    fetchApplicationsByJobIdFailure,
     createApplicationRequest,
     createApplicationSuccess,
     createApplicationFailure,
@@ -15,6 +15,7 @@ import { GetApplicationResponseDto, CreateApplicationResponseDto, GetApplication
 
 // Selector to get API base URL from config slice
 const selectApiBaseUri = (state: RootState) => state.config.apiBaseUri;
+const selectAuthToken = (state: RootState) => state.auth.token;
 
 const fetchApplicationApi = async (apiBaseUri: string, id: string) => {
     const response = await fetch(`${apiBaseUri}/api/applications/${id}`);
@@ -27,18 +28,24 @@ const fetchApplicationApi = async (apiBaseUri: string, id: string) => {
     return responseData;
 }
 
-function* fetchApplicationSaga(action: { payload: string; type: string }) {
+function* fetchApplicationSaga(action: { payload: { id: string; }; type: string }) {
     try {
         const apiBaseUri: string = yield select(selectApiBaseUri);
-        const response: GetApplicationResponseDto = yield call(fetchApplicationApi, apiBaseUri, action.payload);
-        yield put(fetchApplicationSuccess(response.data.application));
+        const response: GetApplicationResponseDto = yield call(fetchApplicationApi, apiBaseUri, action.payload.id);
+        yield put(fetchApplicationSuccess({ application: response.data.application }));
     } catch (error: any) {
-        yield put(fetchApplicationFailure(error.message));
+        yield put(fetchApplicationFailure({ error: error.message }));
     }
 }
 
-const fetchApplicationsApi = async (apiBaseUri: string, id: string) => {
-    const response = await fetch(`${apiBaseUri}/api/applications/job/${id}`);
+const fetchApplicationsByJobIdApi = async (apiBaseUri: string, id: string, token: string) => {
+    const response = await fetch(`${apiBaseUri}/api/applications/job/${id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+    });
     const responseData: GetApplicationsResponseDto = await response.json();
 
     if (!response.ok) {
@@ -48,13 +55,14 @@ const fetchApplicationsApi = async (apiBaseUri: string, id: string) => {
     return responseData;
 }
 
-function* fetchApplicationsSaga(action: { payload: string; type: string }) {
+function* fetchApplicationsByJobIdSaga(action: { payload: { id: string; }; type: string }) {
     try {
         const apiBaseUri: string = yield select(selectApiBaseUri);
-        const response: GetApplicationsResponseDto = yield call(fetchApplicationsApi, apiBaseUri, action.payload);
-        yield put(fetchApplicationsSuccess(response.data.applications));
+        const token: string = yield select(selectAuthToken);
+        const response: GetApplicationsResponseDto = yield call(fetchApplicationsByJobIdApi, apiBaseUri, action.payload.id, token);
+        yield put(fetchApplicationsByJobIdSuccess({ applications: response.data.applications }));
     } catch (error: any) {
-        yield put(fetchApplicationsFailure(error.message));
+        yield put(fetchApplicationsByJobIdFailure({ error: error.message }));
     }
 }
 
@@ -76,18 +84,19 @@ const createApplicationApi = async (apiBaseUri: string, payload: any, token: str
     return responseData;
 }
 
-function* createApplicationSaga(action: { payload: { data: any; token: string }; type: string }) {
+function* createApplicationSaga(action: { payload: { data: any; }; type: string }) {
     try {
         const apiBaseUri: string = yield select(selectApiBaseUri);
-        const response: CreateApplicationResponseDto = yield call(createApplicationApi, apiBaseUri, action.payload.data, action.payload.token);
-        yield put(createApplicationSuccess(response.data.application));
+        const token: string = yield select(selectAuthToken);
+        const response: CreateApplicationResponseDto = yield call(createApplicationApi, apiBaseUri, action.payload.data, token);
+        yield put(createApplicationSuccess({ application: response.data.application }));
     } catch (error: any) {
-        yield put(createApplicationFailure(error.message));
+        yield put(createApplicationFailure({ error: error.message }));
     }
 }
 
 export function* applicationsSaga() {
     yield takeLatest(fetchApplicationRequest.type, fetchApplicationSaga);
-    yield takeLatest(fetchApplicationsRequest.type, fetchApplicationsSaga);
+    yield takeLatest(fetchApplicationsByJobIdRequest.type, fetchApplicationsByJobIdSaga);
     yield takeLatest(createApplicationRequest.type, createApplicationSaga);
 }

@@ -30,15 +30,12 @@ const fetchUserProfileApi = async (apiBaseUri: string, token: string) => {
 
 function* fetchUserProfileSaga() {
     try {
-        const token: string = yield select(selectAuthToken);
-        if (!token) {
-            throw new Error('No auth token found');
-        }
         const apiBaseUri: string = yield select(selectApiBaseUri);
+        const token: string = yield select(selectAuthToken);
         const response: GetUserResponseDto = yield call(fetchUserProfileApi, apiBaseUri, token);
-        yield put(fetchUserProfileSuccess(response.data.user));
+        yield put(fetchUserProfileSuccess({ user: response.data.user }));
     } catch (error: any) {
-        yield put(fetchUserProfileFailure(error.message));
+        yield put(fetchUserProfileFailure({ error: error.message }));
     }
 }
 
